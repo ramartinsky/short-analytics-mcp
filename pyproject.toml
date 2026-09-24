@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "statistical-mcp"
+version = "0.1.0"
+description = "A small, stateless MCP server for explainable statistical analysis"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "mcp==2.2.0",
+  "numpy==2.5.3",
+  "pandas==3.0.6",
+  "prophet==1.4.0",
+  "pydantic==2.13.5",
+  "scikit-learn==1.9.1",
+  "scipy==1.18.1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest==9.1.1",
+  "pytest-asyncio==1.4.0",
+]
+
+[project.scripts]
+statistical-mcp = "statistical_mcp.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/statistical_mcp"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+markers = ["prophet: slower tests that fit a Prophet model"]
+
+[tool.uv]
+package = true
