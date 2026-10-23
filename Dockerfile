@@ -21,6 +21,5 @@ RUN groupadd --system app && useradd --system --gid app --create-home app
 WORKDIR /app
 COPY --from=builder --chown=app:app /app /app
 USER app
-EXPOSE 8000
 ENTRYPOINT ["statistical-mcp"]
-CMD ["--transport", "streamable-http", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["--transport", "stdio"]
