@@ -59,36 +59,36 @@ def compact(response: Response) -> CallToolResult:
     )
 
 
-@mcp.tool(title="Fit and explain a Prophet model")
-@tool_errors
-def prophet_model(
-    records: Annotated[list[dict[str, str | float | int | None]], Field(min_length=2, description="Inline records; no paths or remote URLs.")],
-    timestamp_column: Annotated[str, Field(description="Name of the ISO 8601 timestamp field.")],
-    target_column: Annotated[str, Field(description="Name of the numeric target field.")],
-    regressors: Annotated[list[Regressor] | None, Field(description="Optional numeric regressors and their interpretation.")] = None,
-    settings: ProphetSettings | None = None,
-) -> Response:
-    """Fit Prophet and summarize trend, seasonal components, changepoints, coefficients, and in-sample error."""
+# @mcp.tool(title="Fit and explain a Prophet model")
+# @tool_errors
+# def prophet_model(
+#     records: Annotated[list[dict[str, str | float | int | None]], Field(min_length=2, description="Inline records; no paths or remote URLs.")],
+#     timestamp_column: Annotated[str, Field(description="Name of the ISO 8601 timestamp field.")],
+#     target_column: Annotated[str, Field(description="Name of the numeric target field.")],
+#     regressors: Annotated[list[Regressor] | None, Field(description="Optional numeric regressors and their interpretation.")] = None,
+#     settings: ProphetSettings | None = None,
+# ) -> Response:
+#     """Fit Prophet and summarize trend, seasonal components, changepoints, coefficients, and in-sample error."""
 
-    return compact(fit_prophet_model(records, timestamp_column, target_column, regressors, settings))  # type: ignore[return-value]
+#     return compact(fit_prophet_model(records, timestamp_column, target_column, regressors, settings))  # type: ignore[return-value]
 
 
-@mcp.tool(title="Forecast exactly one next value with Prophet")
-@tool_errors
-def prophet_next(
-    records: Annotated[list[dict[str, str | float | int | None]], Field(min_length=2, description="Inline training records.")],
-    timestamp_column: str,
-    target_column: str,
-    future: Annotated[FutureSpec, Field(description="Exactly one future timestamp or explicit frequency.")],
-    future_regressors: Annotated[dict[str, float] | None, Field(description="Required future values for every configured regressor.")] = None,
-    regressors: list[Regressor] | None = None,
-    settings: ProphetSettings | None = None,
-) -> Response:
-    """Refit Prophet for this call and predict one future observation, including component contributions."""
+# @mcp.tool(title="Forecast exactly one next value with Prophet")
+# @tool_errors
+# def prophet_next(
+#     records: Annotated[list[dict[str, str | float | int | None]], Field(min_length=2, description="Inline training records.")],
+#     timestamp_column: str,
+#     target_column: str,
+#     future: Annotated[FutureSpec, Field(description="Exactly one future timestamp or explicit frequency.")],
+#     future_regressors: Annotated[dict[str, float] | None, Field(description="Required future values for every configured regressor.")] = None,
+#     regressors: list[Regressor] | None = None,
+#     settings: ProphetSettings | None = None,
+# ) -> Response:
+#     """Refit Prophet for this call and predict one future observation, including component contributions."""
 
-    return compact(  # type: ignore[return-value]
-        forecast_prophet_next(records, timestamp_column, target_column, future, future_regressors, regressors, settings)
-    )
+#     return compact(  # type: ignore[return-value]
+#         forecast_prophet_next(records, timestamp_column, target_column, future, future_regressors, regressors, settings)
+#     )
 
 
 @mcp.tool(title="Correlation and significance")
