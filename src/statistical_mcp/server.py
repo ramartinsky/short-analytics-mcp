@@ -20,6 +20,9 @@ from .contingency import calculate_contingency
 from .correlation import calculate_correlation
 from .prophet_tools import FutureSpec, ProphetSettings, Regressor, fit_prophet_model, forecast_prophet_next
 
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+
 logger = logging.getLogger(__name__)
 P = ParamSpec("P")
 R = TypeVar("R")
