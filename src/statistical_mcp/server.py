@@ -138,3 +138,9 @@ def classification_metrics(
             true_labels, positive_label, predicted_labels, probabilities, threshold, validation, threshold_objective
         )
     )
+
+
+
+@mcp.custom_route("/healthz", methods=["GET"])
+async def healthz(request: Request) -> JSONResponse:    
+    return JSONResponse({"status": "ok"})
