@@ -1,12 +1,15 @@
 # Statistical MCP server
 
-A stateless Python MCP server for five explainable statistical operations: Prophet model inspection, one-step Prophet forecasts, correlation, contingency tables (including conservative Simpson reversal detection), and binary classification metrics.
+<!-- A stateless Python MCP server for five explainable statistical operations: Prophet model inspection, one-step Prophet forecasts, correlation, contingency tables (including conservative Simpson reversal detection), and binary classification metrics. -->
+A stateless Python MCP server for three explainable statistical operations: correlation, contingency tables (including conservative Simpson reversal detection), and binary classification metrics. Prophet model inspection and forecasting remain available as optional Python helpers, not registered MCP tools.
 
 Every call is self-contained. Inputs are inline JSON, outputs contain `result`, `warnings`, and `metadata`, and undefined statistics are JSON `null` with a reason. The server does not fetch remote data, read user paths, persist models, or require external services.
 
 ## Run with Docker
 
 The supported image target is `linux/amd64`.
+
+The default image does not install Prophet or its exclusive dependencies (including CmdStanPy and Matplotlib), and the server does not import the Prophet helpers at startup. NumPy, pandas, SciPy, and scikit-learn remain required for the active tools.
 
 ```bash
 docker build --platform linux/amd64 -t statistical-mcp .
@@ -90,7 +93,21 @@ Returns counts, row/column proportions, expected counts, chi-square results, Cra
 
 Predicted labels determine precision, recall, accuracy, F1, and the confusion matrix when supplied; probabilities determine ROC AUC. A threshold is suggested only from the separate `validation` set, with highest-threshold tie breaking, then evaluated separately on the evaluation scores. The threshold depends on the chosen F1 or Youden's J objective.
 
-### `prophet_model`
+## Optional Prophet helpers
+
+Prophet is excluded from the default installation. To install it for direct Python use and run the complete test suite:
+
+```bash
+uv sync --frozen --extra dev --extra prophet
+uv run --extra dev --extra prophet pytest
+```
+
+Without this extra, Prophet tests are skipped. Installing the extra does not register additional MCP tools. The functions `fit_prophet_model` and `forecast_prophet_next` in `statistical_mcp.prophet_tools` can be called directly from Python.
+
+The following JSON examples describe the helper inputs, not MCP `tools/call` arguments. For Python calls, construct `Regressor`, `ProphetSettings`, and `FutureSpec` objects for the corresponding fields.
+
+<!-- ### `prophet_model` -->
+### Model inspection: `fit_prophet_model`
 
 ```json
 {
@@ -108,7 +125,8 @@ Predicted labels determine precision, recall, accuracy, F1, and the confusion ma
 
 Returns component summaries, changepoints, extra-regressor coefficients on the original data scale, and in-sample MAE. Additive coefficients are target change per regressor unit; multiplicative coefficients are relative to trend. Seasonal Fourier weights are never presented as ordinary coefficients. Default MAP fitting does not report coefficient intervals; bounded MCMC (`mcmc_samples` up to 300) produces posterior intervals. Fitted effects are associations, not causal effects.
 
-### `prophet_next`
+<!-- ### `prophet_next` -->
+### One-step forecast: `forecast_prophet_next`
 
 ```json
 {
@@ -132,8 +150,12 @@ The model is refit inside the request and exactly one future row is predicted. I
 
 - At most 10,000 rows per call and 200 categories per categorical field.
 - HTTP request bodies default to 4 MiB; `--max-request-bytes` can lower or raise this deployment limit.
+<!--
 - Prophet fitting has two in-process slots. Calls beyond that capacity receive a retryable tool error instead of queuing without bound.
 - Prophet accepts linear or flat growth and a small allowlist of trend/seasonality settings. No runtime downloads are performed.
+-->
+- The optional Prophet helpers have two in-process fitting slots. Calls beyond that capacity raise `RuntimeError` instead of queuing without bound.
+- The optional Prophet helpers accept linear or flat growth and a small allowlist of trend/seasonality settings. No runtime downloads are performed.
 - Correlation and contingency p-values are ordinary unadjusted tests. Larger sparse contingency tables are explicitly flagged as unreliable for asymptotic inference.
 - Classification is binary. ROC AUC requires probabilities and both true classes. Undefined precision, recall, F1, and AUC are `null` with reasons.
 - JSON never contains NaN or Infinity.

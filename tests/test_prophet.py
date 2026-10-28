@@ -2,6 +2,8 @@ import math
 
 import pytest
 
+pytest.importorskip("prophet", reason="Install the prophet extra to run Prophet tests.", exc_type=ModuleNotFoundError)
+
 from statistical_mcp.prophet_tools import FutureSpec, Regressor, fit_prophet_model, forecast_prophet_next
 
 

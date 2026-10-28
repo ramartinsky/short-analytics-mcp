@@ -6,7 +6,8 @@ import logging
 import json
 from collections.abc import Callable
 from functools import wraps
-from typing import Annotated, Any, Literal, ParamSpec, TypeVar
+# from typing import Annotated, Any, Literal, ParamSpec, TypeVar
+from typing import Annotated, Literal, ParamSpec, TypeVar
 
 from mcp.server import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
@@ -18,7 +19,7 @@ from .classification import ValidationScores, calculate_classification_metrics
 from .common import Label, Response
 from .contingency import calculate_contingency
 from .correlation import calculate_correlation
-from .prophet_tools import FutureSpec, ProphetSettings, Regressor, fit_prophet_model, forecast_prophet_next
+# from .prophet_tools import FutureSpec, ProphetSettings, Regressor, fit_prophet_model, forecast_prophet_next
 
 from starlette.requests import Request
 from starlette.responses import JSONResponse
